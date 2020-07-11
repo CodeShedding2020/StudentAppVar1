@@ -77,5 +77,21 @@ namespace CodeShedding.Controllers
             await this.client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("STDAMIN", "StudentsCollection", documentId));
             return RedirectToAction("Student");
         }
+
+        public ActionResult StudentDetails()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> StudentDetails(string documentId)
+        {
+           FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
+
+
+            IQueryable<Student> employeeQuery = this.client.CreateDocumentQuery<Student>(
+                          UriFactory.CreateDocumentCollectionUri("STDAMIN", "StudentsCollection"));
+
+            return View(documentId);
+        }             
     }
 }

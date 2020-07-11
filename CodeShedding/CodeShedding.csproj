@@ -271,6 +271,7 @@
     <Content Include="Views\Account\SignOutCallback.cshtml" />
     <Content Include="Views\Home\AddStudent.cshtml" />
     <Content Include="Views\Home\Student.cshtml" />
+    <Content Include="Views\Home\StudentDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
