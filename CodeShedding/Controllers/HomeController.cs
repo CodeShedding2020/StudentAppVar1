@@ -18,14 +18,11 @@ namespace CodeShedding.Controllers
         private DocumentClient client;
         public HomeController()
         {
-            EndpointUrl = "https://tast-students.documents.azure.com:443/";
-            PrimaryKey = "KsqEnYnub6c1G9aMOhJ5W3o8UY5cMUY1GjkMoUWZ7uQsHeoscMFiJZ4JudHTQDqx9PxEBWoKGzIXnJSLlD1SsA==";
+            EndpointUrl = "https://pitoriuniversity.documents.azure.com:443/";
+            PrimaryKey = "wuD0m7z9Ys8HnhWsvdkUC4NDW1Dyb07uhO3EGMTlbjaJAxgMqnwmnpbFtXAfq8XDuloyaR4oArfaUQZH1Nmm4g==";
             client = new DocumentClient(new Uri(EndpointUrl), PrimaryKey);
         }
-        public ActionResult Index()
-        {
-            return View();
-        }
+     
 
         public ActionResult About()
         {
@@ -40,42 +37,51 @@ namespace CodeShedding.Controllers
 
             return View();
         }
-        public async Task<ActionResult> Student()
+        public async Task<ActionResult> Index(string searchString)
         {
-            await client.CreateDatabaseIfNotExistsAsync(new Database { Id = "STDAMIN" });
+            await client.CreateDatabaseIfNotExistsAsync(new Database { Id = "ToDoList" });
 
-            await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("STDAMIN"),
-                new DocumentCollection { Id = "StudentsCollection" });
+            await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("ToDoList"),
+                new DocumentCollection { Id = "Items" });
 
 
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
 
-            IQueryable<Student> studentQuery = this.client.CreateDocumentQuery<Student>(
-                    UriFactory.CreateDocumentCollectionUri("STDAMIN", "StudentsCollection"), queryOptions)
-                    .Where(f => f.Status == true);
+            if (!String.IsNullOrEmpty(searchString))
+            {
 
-            return View(studentQuery);
+                IQueryable<Student> search = this.client.CreateDocumentQuery<Student>(
+          UriFactory.CreateDocumentCollectionUri("ToDoList", "Items"), queryOptions)
+          .Where(student => student.Student_Number.ToUpper().Contains(searchString.ToUpper())
+               || student.First_Name.ToUpper().Contains(searchString.ToUpper()) || student.Last_Name.ToUpper().Contains(searchString.ToUpper()) && student.Status == true);
+                return View(search);
+            }
+
+
+            return View(this.client.CreateDocumentQuery<Student>(
+                    UriFactory.CreateDocumentCollectionUri("ToDoList", "Items"), queryOptions)
+                    .Where(f => f.Status == true));
         }
 
-        public ActionResult AddStudent()
+        public ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddStudent(Student student)
+        public async Task<ActionResult> Create(Student student)
         {
 
-            await this.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("STDAMIN", "StudentsCollection"), student);
+            await this.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("ToDoList", "Items"), student);
 
-            return RedirectToAction("Student");
+            return RedirectToAction("Index");
         }
 
-        public async Task<ActionResult> DeleteStudent(string documentId)
+        public async Task<ActionResult> Delete(string id)
         {
-            await this.client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("STDAMIN", "StudentsCollection", documentId));
-            return RedirectToAction("Student");
+            await this.client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("ToDoList", "Items", id));
+            return RedirectToAction("Index");
         }
     }
 }
