@@ -6,10 +6,9 @@
 
 <h2>AddStudent</h2>
 
-
 @using (Html.BeginForm()) 
 {
-    @Html.AntiForgeryToken()
+    @*@Html.AntiForgeryToken()*@
     
     <div class="form-horizontal">
         <h4>Student</h4>
@@ -90,9 +89,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Student")
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

@@ -40,7 +40,7 @@ namespace CodeShedding.Controllers
 
             return View();
         }
-        public async Task<ActionResult> Students()
+        public async Task<ActionResult> Student()
         {
             await client.CreateDatabaseIfNotExistsAsync(new Database { Id = "STDAMIN" });
 
@@ -69,13 +69,13 @@ namespace CodeShedding.Controllers
 
             await this.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("STDAMIN", "StudentsCollection"), student);
 
-            return RedirectToAction("Students");
+            return RedirectToAction("Student");
         }
 
         public async Task<ActionResult> DeleteStudent(string documentId)
         {
             await this.client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("STDAMIN", "StudentsCollection", documentId));
-            return RedirectToAction("Students");
+            return RedirectToAction("Student");
         }
     }
 }
