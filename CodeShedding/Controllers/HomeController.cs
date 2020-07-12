@@ -78,20 +78,37 @@ namespace CodeShedding.Controllers
             return RedirectToAction("Student");
         }
 
-        public ActionResult StudentDetails()
-        {
-            return View();
-        }
-        [HttpPost]
+      
         public async Task<ActionResult> StudentDetails(string documentId)
         {
-           FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
 
-            IQueryable<Student> employeeQuery = this.client.CreateDocumentQuery<Student>(
-                          UriFactory.CreateDocumentCollectionUri("STDAMIN", "StudentsCollection"));
+            await this.client.ReadDocumentAsync(UriFactory.CreateDocumentUri("STDAMIN", "StudentsCollection", documentId));
 
-            return View(documentId);
-        }             
+
+
+            return View();
+
+        }
+
+
+
+        /*  [HttpPost]
+          public async Task<ActionResult> StudentDetails()
+          {
+
+              await client.CreateDatabaseIfNotExistsAsync(new Database { Id = "STDAMIN" });
+
+              await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("STDAMIN"),
+                  new DocumentCollection { Id = "StudentsCollection" });
+
+              FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
+
+
+              IQueryable<Student> employeeQuery = this.client.CreateDocumentQuery<Student>(
+                            UriFactory.CreateDocumentCollectionUri("STDAMIN", "StudentsCollection"), queryOptions);
+
+              return View(employeeQuery);
+          }      */
     }
 }
